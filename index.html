@@ -470,6 +470,7 @@ function step1(){
       +'<div class="fg"><label class="req">生年月日</label><input type="date" id="dob" value="'+(b.dob||'')+'"><div class="emsg"></div></div>'
       +'<div class="fg"><label class="req">性別</label><div class="rg h sex-r">'+ri('male','男性')+ri('female','女性')+ri('other','その他')+'</div><div class="verr" id="sexErr"></div></div>'
       +addrBlock(b)
+      +'<div class="fg"><label class="req">電話番号</label><input type="tel" id="tel" value="'+(b.tel||'')+'" placeholder="例）0798-65-3345"><div class="emsg"></div></div>'
       +'<div class="btn-row"><button class="btn bs" id="s1b">&#x2190; 戻る</button><button class="btn bp" id="s1n">次へ &#x2192;</button></div>'
       +'</div>';
     render(h);
@@ -477,12 +478,12 @@ function step1(){
     bindZip();
     ge('s1b').onclick=function(){ S.step=0; step0(); goTop(); };
     ge('s1n').onclick=function(){
-      var req=[{id:'name',msg:'お名前を入力してください'},{id:'dob',msg:'生年月日を選択してください'},{id:'addrAuto',msg:'郵便番号から住所を検索してください'}];
+      var req=[{id:'name',msg:'お名前を入力してください'},{id:'dob',msg:'生年月日を選択してください'},{id:'addrAuto',msg:'郵便番号から住所を検索してください'},{id:'tel',msg:'電話番号を入力してください'}];
       var ok=valReq(req), sex=getR('sex-r');
       if(!sex){ var se=ge('sexErr'); if(se){se.textContent='性別を選択してください';se.style.display='block';} ok=false; }
       if(!ok){ goTop(); return; }
       var addrFull=((ge('addrAuto')?ge('addrAuto').value:'')+' '+(ge('addr')?ge('addr').value:'')).trim();
-      S.basic={name:ge('name').value, kana:ge('kana').value, dob:ge('dob').value, sex:sex, tel:'', zip:(ge('zip')?ge('zip').value:''), addrAuto:(ge('addrAuto')?ge('addrAuto').value:''), address:addrFull, visit:'first'};
+      S.basic={name:ge('name').value, kana:ge('kana').value, dob:ge('dob').value, sex:sex, tel:ge('tel')?ge('tel').value:'', zip:(ge('zip')?ge('zip').value:''), addrAuto:(ge('addrAuto')?ge('addrAuto').value:''), address:addrFull, visit:'first'};
       S.step=2; step2(); goTop();
     };
     return;
