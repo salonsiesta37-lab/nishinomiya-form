@@ -264,6 +264,20 @@ textarea{resize:vertical;min-height:80px}
   .pv-wrap{padding:0;max-width:100%}
 }
 #ps{display:none}
+
+/* ━━ Markdown 表示 ━━ */
+.md-body{line-height:1.8;font-size:.95rem}
+.md-body h1,.md-body h2,.md-body h3{color:var(--dg);margin:1em 0 .5em}
+.md-body p,.md-body ul,.md-body ol,.md-body blockquote,.md-body table,.md-body pre{margin:.6em 0}
+.md-body ul,.md-body ol{padding-left:1.5em}
+.md-body a{color:var(--dg)}
+.md-body blockquote{border-left:4px solid var(--border);padding:.2em .8em;color:var(--gray);background:var(--lg);border-radius:0 8px 8px 0}
+.md-body code{background:var(--light);padding:.1em .4em;border-radius:4px;font-size:.9em}
+.md-body pre{background:var(--light);padding:10px;border-radius:8px;overflow-x:auto}
+.md-body pre code{background:none;padding:0}
+.md-body table{border-collapse:collapse;width:100%}
+.md-body th,.md-body td{border:1px solid var(--border);padding:4px 8px}
+.md-body th{background:var(--lg)}
 </style>
 </head>
 <body>
@@ -283,6 +297,28 @@ textarea{resize:vertical;min-height:80px}
   <input name="記入日時">
   <textarea name="内容"></textarea>
 </form>
+<!-- Markdown 表示用ライブラリ（marked: Markdown→HTML変換 / DOMPurify: 安全化） -->
+<script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+<script>
+// Markdown テキストを安全な HTML 文字列に変換
+function md(text){
+  if(!window.marked||!window.DOMPurify) return String(text==null?'':text).replace(/[&<>"']/g,function(c){return '&#'+c.charCodeAt(0)+';';});
+  return DOMPurify.sanitize(marked.parse(String(text==null?'':text),{breaks:true}));
+}
+// data-md 属性を持つ要素の中身を Markdown として描画
+function renderMarkdown(root){
+  (root||document).querySelectorAll('[data-md]:not([data-md-done])').forEach(function(el){
+    el.innerHTML=md(el.textContent);
+    el.classList.add('md-body');
+    el.setAttribute('data-md-done','');
+  });
+}
+document.addEventListener('DOMContentLoaded',function(){
+  renderMarkdown();
+  new MutationObserver(function(){renderMarkdown();}).observe(document.body,{childList:true,subtree:true});
+});
+</script>
 <script>
 
 var MAIL_TO = 'n.yutaka060411@gmail.com';
